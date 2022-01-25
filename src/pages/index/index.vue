@@ -15,24 +15,25 @@ function aa() {
 }
 
 // #ifdef APP-PLUS
-const wxp_Amap = uni.requireNativePlugin("WXP-Amap");
-// 插件内置方法使用
-wxp_Amap.permission(); // 用于申请定位权限，
-// 持续定位
-wxp_Amap.start({  // {} 大括号内参数说明见下方
-    setInterval: 5000, // 定位间隔，单位 ms，不是必须的，默认 2000ms
-    cacheEnable: true // 是否允许缓存，默认为true，既当位置不变时返回最后一次定位的地址，不是必须的
-}, result => {
-    // 处理回调结果
-    // result 为回调结果 见下方 start() 回调结果
-    console.log(JSON.stringify(result));
-})
+// const wxp_Amap = uni.requireNativePlugin("WXP-Amap");
+// // 插件内置方法使用
+// wxp_Amap.permission(); // 用于申请定位权限，
+// // 持续定位
+// wxp_Amap.start({  // {} 大括号内参数说明见下方
+//     setInterval: 5000, // 定位间隔，单位 ms，不是必须的，默认 2000ms
+//     cacheEnable: true // 是否允许缓存，默认为true，既当位置不变时返回最后一次定位的地址，不是必须的
+// }, result => {
+//     // 处理回调结果
+//     // result 为回调结果 见下方 start() 回调结果
+//     console.log(JSON.stringify(result));
+// })
 // #endif
 
-// #ifndef H5
+// #ifdef APP-PLUS || H5
 let time = setInterval(function() {  
-    uni.getLocation({  
-        type: 'gcj02 ',  
+	console.log(0)
+    uni.getLocation({ 
+        type: 'gcj02',
         success: function(res) {  
             // uni.setStorageSync('userLocation', JSON.stringify(res));  
             console.log(11, res)
@@ -41,18 +42,14 @@ let time = setInterval(function() {
                 icon: 'none'  
             }); 
         },  
-        fail: function() {  
-          console.log(22);
+        fail: function(e) {  
+          console.log(22, e);
           
             uni.showToast({  
                 title: '获取位置失败',  
                 icon: 'none'  
             });  
         },
-        complete: (res) => {
-          console.log(33, res);
-          
-        }
     });  
 }, 3000);  
 // #endif
