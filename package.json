@@ -1,6 +1,6 @@
 {
-  "name": "uni-preset-vue",
-  "version": "0.0.0",
+  "name": "caitou-delivery",
+  "version": "1.0.0",
   "scripts": {
     "dev": "npm run dev:h5",
     "serve": "npm run dev:app",
@@ -54,7 +54,7 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
-    "@dcloudio/types": "^2.5.16",
+    "@dcloudio/types": "^2.5.17",
     "@dcloudio/uni-automator": "^3.0.0-alpha-3030820220114004",
     "@dcloudio/uni-cli-shared": "^3.0.0-alpha-3030820220114004",
     "@dcloudio/vite-plugin-uni": "^3.0.0-alpha-3030820220114004",
