@@ -51,7 +51,9 @@
                     "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
                 ],
-                "abiFilters" : [ "armeabi-v7a", "x86" ]
+                "abiFilters" : [ "armeabi-v7a", "x86" ],
+                "minSdkVersion" : 21,
+                "targetSdkVersion" : 27
             },
             /* ios打包配置 */
             "ios" : {
@@ -114,6 +116,9 @@
                         "notification@2x" : "unpackage/res/icons/40x40.png"
                     }
                 }
+            },
+            "splashscreen" : {
+                "useOriginalMsgbox" : true
             }
         },
         "nativePlugins" : {

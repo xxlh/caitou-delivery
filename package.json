@@ -18,7 +18,7 @@
     "dev:quickapp-webview": "uni -p quickapp-webview",
     "dev:quickapp-webview-huawei": "uni -p quickapp-webview-huawei",
     "dev:quickapp-webview-union": "uni -p quickapp-webview-union",
-    "build": "npm run build:app",
+    "build": "npm run build:app && rm -rf src/unpackage/resources/__UNI__ECEC08F/www && cp -R dist/build/app src/unpackage/resources/__UNI__ECEC08F/www",
     "build:app": "uni build -p app",
     "build:custom": "uni build -p",
     "build:h5": "uni build",
