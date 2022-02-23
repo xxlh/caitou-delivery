@@ -4,36 +4,24 @@
     <navigator url="/pages/my/my" class="text-area">
       <text class="title">{{ title }}</text>
     </navigator>
+	<button @click="getLocation">获取定位</button>
+	<button @click="permission">检测权限</button>
+	<text>{{count }}</text>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-const title = ref('Hello2')
-function aa() {
-  alert(11)
-}
+const title = ref('uni定位')
 
-// #ifdef APP-PLUS
-// const wxp_Amap = uni.requireNativePlugin("WXP-Amap");
-// // 插件内置方法使用
-// wxp_Amap.permission(); // 用于申请定位权限，
-// // 持续定位
-// wxp_Amap.start({  // {} 大括号内参数说明见下方
-//     setInterval: 5000, // 定位间隔，单位 ms，不是必须的，默认 2000ms
-//     cacheEnable: true // 是否允许缓存，默认为true，既当位置不变时返回最后一次定位的地址，不是必须的
-// }, result => {
-//     // 处理回调结果
-//     // result 为回调结果 见下方 start() 回调结果
-//     console.log(JSON.stringify(result));
-// })
-// #endif
-
-// #ifdef APP-PLUS || H5
-let time = setInterval(function() {  
-	console.log(0)
+// #ifdef H5 || APP-PLUS
+// let time = setInterval(function() {  
+// 	console.log(0)
+function getLocation() {
     uni.getLocation({ 
-        type: 'gcj02',
+        // type: 'gcj02',
+        type: 'wgs84',
+        geocode: true,
         success: function(res) {  
             // uni.setStorageSync('userLocation', JSON.stringify(res));  
             console.log(11, res)
@@ -51,7 +39,8 @@ let time = setInterval(function() {
             });  
         },
     });  
-}, 3000);  
+}
+// }, 3000);  
 // #endif
 </script>
 

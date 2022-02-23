@@ -1,10 +1,10 @@
 <template>
 	<view v-if="list.length" class="content">
-		<uni-card class="order-card" v-for="item in list" :key="item.id" title="基础卡片" extra="额外信息" @tap="toOrderDetail">
+		<uni-card class="order-card" v-for="item in list" :key="item.id" title="基础卡片" extra="额外信息">
 			<text>这是一个基础卡片示例，此示例展示了一个标题加标题额外信息的标准卡片。</text>
 			<view class="actions">
-				<button type="primary" size="mini" @tap="aa">送达</button>
-				<button type="primary" size="mini" plain="true">送达</button>
+				<button type="primary" size="mini" @tap="toOrderDetail">送达</button>
+				<button type="primary" size="mini" plain="true" @tap="aa">原生</button>
 			</view>
 		</uni-card>
 	</view>
@@ -26,7 +26,7 @@ function toOrderDetail() {
 	uni.navigateTo({url: "/pages/index/index"});
 }
 function aa() {
-	alert(11)
+	uni.navigateTo({url: "/pages/index/native"});
 }
 
 </script>
