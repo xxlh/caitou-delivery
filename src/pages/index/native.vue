@@ -1,6 +1,6 @@
 <template>
   <view class="content">
-    <image class="logo" src="/static/logo.png" @tap="aa" />
+    <image class="logo" src="/static/logo.png" />
     <navigator url="/pages/my/my" class="text-area">
       <text class="title">{{ title }}</text>
     </navigator>
@@ -15,13 +15,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 const title = ref('插件定位')
-function aa() {
-  alert(11)
-}
+const count = ref(0)
 
 // #ifdef APP-PLUS
 const wxp_Amap = uni.requireNativePlugin("WXP-Amap");
-let count = 0;
 function permission() {
 	wxp_Amap.permission(result => {
 		console.log(JSON.stringify(result));
@@ -40,7 +37,7 @@ function start() {
 	    // 处理回调结果
 	    // result 为回调结果 见下方 start() 回调结果
 		console.log(JSON.stringify(result));
-		count++;
+		count.value++;
 	})
 }
 function stop() {
