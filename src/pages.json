@@ -3,17 +3,18 @@
 		{
 			"path": "pages/index/order",
 			"style": {
-				"navigationBarTitleText": "配送订单"
+				"navigationBarTitleText": "配送订单",
+                "enablePullDownRefresh": true
 			}
 		},
 		{
-			"path": "pages/index/index",
+			"path": "pages/location-poc/web",
 			"style": {
 				"navigationBarTitleText": "uni location"
 			}
 		},
 		{
-			"path": "pages/index/native",
+			"path": "pages/location-poc/native",
 			"style": {
 				"navigationBarTitleText": "native locaiton"
 			}
@@ -22,6 +23,12 @@
 			"path": "pages/my/my",
 			"style": {
 				"navigationBarTitleText": "个人中心"
+			}
+		},
+		{
+			"path": "pages/my/login",
+			"style": {
+				"navigationBarTitleText": "登陆"
 			}
 		}
 	],

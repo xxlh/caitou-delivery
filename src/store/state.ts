@@ -35,8 +35,9 @@ export default {
 	selectedAddress: null,
 	editingAddress: null,
 	cityNow: "",
-	baseUrl: process.env.NODE_ENV === 'development' ? "http://api-dev.caitou.ieexx.com/" : 'https://api.caitou.ieexx.com/',
+	baseUrl: process.env.NODE_ENV === 'development' ? "http://delivery-api-dev.caitou.ieexx.com/" : 'https://delivery-api.caitou.ieexx.com/',
 	UserBaseUrl: process.env.NODE_ENV === 'development' ? "http://user-api-dev.caitou.ieexx.com/	" : 'https://user-api.caitou.ieexx.com/',
+	MainBaseUrl: process.env.NODE_ENV === 'development' ? "http://api-dev.caitou.ieexx.com/	" : 'https://api.caitou.ieexx.com/',
 	shareParams: {
 		title: '查看物业费用明细',
 		content: '您好业主，查看物业费用明细，小区公告，生鲜配送上门！',

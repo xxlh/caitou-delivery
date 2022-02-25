@@ -25,10 +25,8 @@ function permission() {
 	});
 }
 function start() {
+  // 如果出现需要先调用updatePrivacyShow,updatePrivacyAgree提示，需要先调用uni.getLocation({type: 'gcj02'})即可
 	console.log("老铁，给点力好不好？");
-    // wxp_Amap.updatePrivacyShow(wxp_Amap, true, true);
-    // wxp_Amap.updatePrivacyAgree(wxp_Amap, true);
-
 	// 持续定位
 	wxp_Amap.start({  // {} 大括号内参数说明见下方
 	    setInterval: 5000, // 定位间隔，单位 ms，不是必须的，默认 2000ms

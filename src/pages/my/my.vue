@@ -1,368 +1,389 @@
 <template>
-	<view class="page_content">
-		<view class="header">
-			<image class="btn" src="/static/icon_scan.png"></image>
-			<text class="title">会员中心</text>
-			<image class="btn" src="/static/icon_msg.png"></image>
+	<view>
+		<view v-if="showHeader" class="status" :style="{position:headerPosition,top:statusTop}"></view>
+		<view v-if="showHeader" class="header" :style="{position:headerPosition,top:headerTop}">
+			<view class="addr"></view>
+			<view class="input-box">
+				
+			</view>
+			<view class="icon-btn">
+				<!-- <view class="icon tongzhi" @tap="toMsg"></view> -->
+				<!-- <view class="icon setting" @tap="toSetting"></view> -->
+			</view>
 		</view>
-		<image class="logo" src="/static/head.png"></image>
-
-		<swiper @change="swiperChange" previous-margin="50px" next-margin="50px" class="swiper" :indicator-dots="false"
-		 :autoplay="false" :interval="3000" :duration="1000" :current="bigIdx">
-
-			<template v-for="(vip, i) in vips" :key="'vip_'+i">
-				<swiper-item>
-					<view :class="['swiper-item',bigIdx === i ? 'big' : 'small']" :style="{background:vip.bg,'box-shadow':vip.shadow}">
-						<image class="img" src="/static/icon_vip.png"></image>
-						<text class="title">{{vip.title}}</text>
-						<text class="sub_title">{{vip.subTitle}}</text>
-					</view>
-				</swiper-item>
-			</template>
-
-		</swiper>
-
-		<view class="title_line">
-			<text class="title">我的任务</text>
-			<text class="more">查看更多</text>
+		<!-- 占位 -->
+		<view v-if="showHeader" class="place"></view>
+		<!-- 用户信息 -->
+		<view class="user" v-if="isLogin">
+			<!-- 头像 -->
+			<view class="left">
+				<image :src="_userinfo.avatar_url" @tap="toSetting"></image>
+			</view>
+			<!-- 昵称,个性签名 -->
+			<view class="right" @tap="toSetting">
+				<view class="username">{{_userinfo.name}}</view>
+				<view class="signature">{{_userinfo.verify ? '认证用户' : ''}}</view> 
+			</view>
+			<!-- 二维码按钮 -->
+			<view class="erweima" @tap="toMyQR">
+				<view class="icon qr"></view>
+			</view>
 		</view>
-
-		<scroll-view class="slider" scroll-x="true">
-			<template v-for="(task,i) in tasks" :key="'task_'+i">
-				<view class="s_item">
-					<view class="content">
-						<image :src="task.icon" class="img"></image>
-						<text class="name">{{task.name}}</text>
-						<text class="desc">{{task.desc}}</text>
-						<text class="btn">去完成</text>
-					</view>
-				</view>
-			</template>
-		</scroll-view>
-
-		<view class="title_line">
-			<text class="title">会员福利</text>
-			<text class="more">查看更多</text>
+		<view class="user" v-if="!isLogin">
+			<view class="left">
+				<image src="/static/img/face.jpg"></image>
+			</view>
+			<view class="right">
+				<view class="username">登陆 / 注册</view>
+			</view>
 		</view>
-
-		<view class="welfare">
-			<template v-for="(info,i) in welfare" :key="'welfare_'+i">
-				<view class="item">
-					<view class="border">
-						<image class="img" :src="info.icon"></image>
-					</view>
-					<text class="txt">{{info.name}}</text>
-				</view>
-			</template>
-		</view>
+		<!-- 占位 -->
+		<view class="place-bottom"></view>
 	</view>
 </template>
 
 <script>
+	import {mapState, mapMutations, mapActions} from 'vuex'
+	import {get, post, request} from '@/common/request';
+
 	export default {
 		data() {
 			return {
-				title: 'Hello',
-				bigIdx: 1,
-				vips: [{
-					bg: 'linear-gradient(94deg,rgba(150,147,168,1),rgba(150,147,164,1))',
-					shadow: '0px 3px 12px 0px rgba(195,164,110,0.23)',
-					title: 'VIP会员',
-					subTitle: '距离下一等级还差888积分'
-				}, {
-					bg: 'linear-gradient(94deg,rgba(192,160,105,1),rgba(233,213,172,1))',
-					shadow: '0px 3px 12px 0px rgba(195,164,110,0.23)',
-					title: 'VIP会员',
-					subTitle: '距离下一等级还差888积分'
-				}, {
-					bg: 'linear-gradient(94deg,rgba(150,147,168,1),rgba(150,147,164,1))',
-					shadow: '0px 3px 12px 0px rgba(195,164,110,0.23)',
-					title: 'VIP会员',
-					subTitle: '距离下一等级还差888积分'
-				}],
-				tasks: [{
-						icon: '/static/icon_signin.png',
-						name: '连续7天签到',
-						desc: '连续签到获得7积分奖励'
-					},
-					{
-						icon: '/static/icon_profile.png',
-						name: '完善个人信息',
-						desc: '完善信息获得7积分奖励'
-					},
-					{
-						icon: '/static/icon_friend.png',
-						name: '邀请好友参加',
-						desc: '邀请好友获得7积分奖励'
-					}
-				],
-				welfare: [{
-						icon: '/static/icon_evaluate.png',
-						name: '专属礼包'
-					},
-					{
-						icon: '/static/icon_gift.png',
-						name: '生日礼包'
-					},
-					{
-						icon: '/static/icon_score.png',
-						name: '我的积分'
-					},
-					{
-						icon: '/static/icon_other.png',
-						name: '其他礼包'
-					}
-				]
-
+				isfirst:true,
+				headerPosition:"fixed",
+				headerTop:null,
+				statusTop:null,
+				showHeader:true,
 			}
 		},
-		onLoad() {
-
+		computed: {
+			...mapState(['_token', '_userinfo', '$accountinfo', '$distributionsSummary', '$activeDistributionExpireTimestamp']),
+			isLogin: function() {
+				return this._token && this._userinfo;
+			},
+		},
+		//下拉刷新，需要自己在page.json文件中配置开启页面下拉刷新 "enablePullDownRefresh": true
+		onPullDownRefresh() {
+		    setTimeout(function () {
+		        uni.stopPullDownRefresh();
+		    }, 1000);
+		},
+		onPageScroll(e){
+			//兼容iOS端下拉时顶部漂移
+			this.headerPosition = e.scrollTop>=0?"fixed":"absolute";
+			this.headerTop = e.scrollTop>=0?null:0;
+			this.statusTop = e.scrollTop>=0?null:-this.statusHeight+'px';
+		},
+		async onLoad() {
+			this.statusHeight = 0;
+			// #ifdef APP-PLUS
+			this.showHeader = false;
+			this.statusHeight = plus.navigator.getStatusbarHeight();
+			// #endif
+		},
+		onShow(){
+			if (!this.isLogin && this.isfirst) {
+				setTimeout(() => {
+					this.toLogin();
+				}, 3000);
+			}
 		},
 		methods: {
-			swiperChange(e) {
-				this.bigIdx = e.detail.current
-			}
+			...mapMutations(['setState']),
+			toLogin(){
+				uni.showToast({title: '请登录',icon:"none"});
+				uni.navigateTo({
+					url:'login'
+				})
+				this.isfirst = false;
+			},
 		}
-	}
+	} 
 </script>
 
-<style>
-	page {
+<style lang="scss">
+	page{position: relative;background-color: #fff;}
+	.status {
 		width: 100%;
-		height: 100%;
-		background-color: white;
+		height: 0;
+		position: fixed;
+		z-index: 10;
+		background-color: #f06c7a;
+		top: 0;
+		/*  #ifdef  APP-PLUS  */
+		height: var(--status-bar-height);//覆盖样式
+		/*  #endif  */
+		
 	}
-</style>
-<style lang="scss" scoped>
-	@function realSize($args) {
-		@return $args / 1.5;
-	}
-
-	.page_content {
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-	.header {
-		padding-top: var(--status-bar-height);
-		width: 95%;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		margin-left: 10px;
-		margin-right: 10px;
-
-		.btn {
-			width: 27px;
-			height: 27px;
-		}
-
-		.title {
-			font-size: 18px;
-			font-weight: 500;
-			color: rgba(43, 43, 43, 1);
-			line-height: 41px;
-			width: 100%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-	}
-
-	.logo {
-		margin-top: 10px;
-		width: 100px;
-		height: 100px;
-	}
-
-	.swiper {
-		width: 100%;
-		margin-top: 10px;
-
-		.swiper-item {
-			border-radius: 16px;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			margin-left: 10px;
-			margin-right: 10px;
-		}
-
-		.big {
-			margin-top: 0;
-
-			.img {
-				margin-top: 15px;
-				width: 40px;
-				height: 40px;
-			}
-
-			.title {
-				font-size: 25px;
-				font-weight: 500;
-				color: rgba(255, 255, 255, 1);
-				line-height: 41px;
-			}
-
-			.sub_title {
-				font-size: 11px;
-				font-weight: 300;
-				color: rgba(255, 255, 255, 1);
-				line-height: 41px;
-			}
-		}
-
-		.small {
-			margin-top: 14px;
-			height: 75%;
-
-			// transition: all 0.3s;
-			.img {
-				margin-top: 5px;
-				width: 25px;
-				height: 25px;
-			}
-
-			.title {
-				font-size: 15px;
-				font-weight: 500;
-				color: rgba(255, 255, 255, 1);
-				line-height: 31px;
-			}
-
-			.sub_title {
-				font-size: 7px;
-				font-weight: 300;
-				color: rgba(255, 255, 255, 1);
-			}
-		}
-	}
-
-	.title_line {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: space-between;
-
-		.title {
-			margin-left: 20px;
-			font-size: 18px;
-			font-weight: 500;
-			color: rgba(51, 51, 51, 1);
-			line-height: 41px;
-		}
-
-		.more {
-			margin-right: 20px;
-			font-size: 10px;
-			font-weight: 300;
-			color: rgba(153, 153, 153, 1);
-			line-height: 41px;
-		}
-	}
-
-	.slider {
-		white-space: nowrap;
-		width: 100%;
-
-		.s_item {
-			display: inline-block;
-			width: 35%;
-			margin-left: 20px;
-			margin-bottom: 10px;
-
-			.content {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				border-radius: 8px;
-				background: white;
-				margin-top: 5px;
-				box-shadow: 0px 2px 6px 0px rgba(103, 103, 103, 0.2);
-
-				.img {
-					width: 103px;
-					height: 105px;
-				}
-
-				.name {
-					margin-top: -10px;
-					font-size: 12px;
-					font-weight: 400;
-					color: rgba(51, 51, 51, 1);
-					line-height: 21px;
-				}
-
-				.desc {
-					font-size: 10px;
-					font-weight: 400;
-					color: rgba(153, 153, 153, 1);
-					line-height: 21px;
-				}
-
-				.btn {
-					width: 80px;
-					height: 30px;
-					margin-bottom: 10px;
-					background: linear-gradient(94deg, rgba(192, 160, 105, 1), rgba(233, 213, 172, 1));
-					box-shadow: 0px 9px 28px 0px rgba(195, 164, 110, 0.23);
-					border-radius: 29px;
-					font-size: 12px;
-					font-weight: 400;
-					color: rgba(255, 255, 255, 1);
-					line-height: 21px;
-					display: flex;
-					align-items: center;
-					justify-content: center;
-				}
-			}
-		}
-	}
-
-	.welfare {
+	
+	.header{
 		width: 92%;
+		padding: 0 4%;
+		height: 100upx;
 		display: flex;
-		flex-direction: row;
+		justify-content: flex-end;
 		align-items: center;
-		justify-content: space-between;
-		background: rgba(255, 255, 255, 1);
-		box-shadow: 0px 1px 21px 0px rgba(103, 103, 103, 0.2);
-		border-radius: 10px;
-		margin-bottom: 10px;
-
-		.item {
-			padding: 10px;
+		position: fixed;
+		top: 0;
+		z-index: 10;
+		background-color: #f06c7a;
+		/*  #ifdef  APP-PLUS  */
+		top: var(--status-bar-height);
+		/*  #endif  */
+		.icon-btn{
+			width: 120upx;
+			height: 60upx;
+			flex-shrink: 0;
 			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-
-			.border {
-				margin-top: 5px;
-				border: 2px solid #c9ac7a;
-				border-radius: 50%;
+			.icon{
+				color: #fff;
+				width: 60upx;
+				height: 60upx;
 				display: flex;
+				justify-content: flex-end;
 				align-items: center;
-				justify-content: center;
-
-				.img {
-					width: 40px;
-					height: 40px;
+				font-size: 42upx;
+			}
+		}
+	}
+	.place{
+		background-color: #f06c7a;
+		height: 100upx;
+		/*  #ifdef  APP-PLUS  */
+		margin-top: var(--status-bar-height);
+		/*  #endif  */
+	}
+	.place-bottom{
+		height: 300upx;
+	}
+	.user{
+		width: 92%;
+		padding: 0 4%;
+		display: flex;
+		align-items: center;
+		// position: relative;
+		background-color: #f06c7a;
+		padding-bottom: 120upx;
+		.left{
+			width: 20vw;
+			height: 20vw;
+			flex-shrink: 0;
+			margin-right: 20upx;
+			border: solid 1upx #fff;
+			border-radius: 100%;
+			image{
+				width: 20vw;
+				height: 20vw;
+				border-radius: 100%;
+			}
+			
+		}
+		.right{
+			width: 100%;
+			.username{
+				font-size: 36upx;
+				color: #fff;
+			}
+			.signature{
+				color: #eee;
+				font-size: 28upx;
+			}
+		}
+		.erweima{
+			flex-shrink: 0;
+			width: 10vw;
+			height: 10vw;
+			margin-left: 5vw;
+			border-radius: 100%;
+		
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: linear-gradient(to left, #fbbb37 0%,#fcf0d0 105%);
+			.icon{
+				color: #7b6335;
+				font-size: 42upx;
+			}
+		}
+	}
+	.order{
+		width: 84%;
+		margin: 30upx 4% 30upx 4%;
+		padding: 30upx 4% 20upx 4%;
+		background-color: #fff;
+		box-shadow: 0upx 0upx 25upx rgba(0,0,0,0.1);
+		border-radius: 15upx;
+		.title{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-bottom: dashed 1upx #eee;
+			font-size: 30upx;
+			padding-bottom: 10upx;
+			.icon{
+				font-size: 26upx;
+				width: 40upx;
+				color: #cecece;
+			}
+		}
+		.list{
+			display: flex;
+			border-bottom: solid 1upx #17e6a1;
+			padding-bottom: 10upx;
+			.box{
+				width: 20%;
+				.img{
+					width: 100%;
+					line-height: 1.8;
+					display: flex;
+					justify-content: center;
+					.icon{
+						font-size: 50upx;
+						color: #464646;
+					}
+				}
+				.text{
+					width: 100%;
+					display: flex;
+					justify-content: center;
+					font-size: 28upx;
+					color: #3d3d3d;
 				}
 			}
-
-			.txt {
-				margin-top: 5px;
-				font-size: 10px;
-				font-weight: 300;
-				color: rgba(153, 153, 153, 1);
+		}
+		.balance-info{
+			display: flex;
+			padding: 10upx 0;
+			.left{
+				width: 75%;
+				display: flex;
+				.box{
+					width: 50%;
+					font-size: 28upx;
+					
+					.num{
+						width: 100%;
+						height: 50upx;
+						display: flex;
+						justify-content: center;
+						align-items: flex-end;
+						color: #f9a453;
+					}
+					.text{
+						width: 100%;
+						display: flex;
+						justify-content: center;
+						color: #3d3d3d;
+						font-size: 28upx;
+					}
+				}
 			}
+			.right{
+				border-left: solid 1upx #17e6a1;
+				width: 25%;
+				.box{
+					
+					.img{
+						width: 100%;
+						height: 50upx;
+						display: flex;
+						justify-content: center;
+						align-items: flex-end;
+						.icon{
+							font-size: 45upx;
+							color: #e78901;
+						}
+					}
+					.text{
+						width: 100%;
+						display: flex;
+						justify-content: center;
+						font-size: 28upx;
+						color: #3d3d3d;
+					}
+				}
+			}
+		}
+	}
+	.VIP{
+		width: 84%;
+		margin: -65upx auto 20upx auto;
+		padding: 30upx 4%;
+		background: linear-gradient(to left, #dea96d 0%,#f6d59b 100%);
+		box-shadow: 0upx 0upx 25upx rgba(0,0,0,0.2);
+		border-radius: 15upx;
+		display: flex;
+		align-items: center;
+		.img{
+			flex-shrink: 0;
+			width: 60upx;
+			height: 60upx;
+			image{
+				width: 60upx;
+				height: 60upx;
+			}
+		}
+		.title{
+			width: 100%;
+			height: 100%;
+			color: #796335;
+			font-size: 30upx;
+		}
+		.tis{
+			width: 50%;
+			display: flex;
+			justify-content: flex-end;
+			color: #fcf0d0;
+			font-size: 26upx;
+		}
+	}
+	.toolbar{
+		width: 92%;
+		margin: 0 4% 0 4%;
+		padding: 0 0 20upx 0;
+		background-color: #fff;
+		box-shadow: 0upx 0upx 25upx rgba(0,0,0,0.1);
+		border-radius: 15upx;
+		.title{
+			padding-top: 10upx;
+			margin: 0 0 10upx 3%;
+			font-size: 30upx;
+			height: 80upx;
+			display: flex;
+			align-items: center;
+		}
+		.list{
+			display: flex;
+			flex-wrap: wrap;
+			.box{
+				width: 25%;
+				margin-bottom: 30upx;
+				.img{
+					width: 23vw;
+					height: 10.5vw;
+					display: flex;
+					justify-content: center;
+					
+					image{
+						width: 9vw;
+						height: 9vw;
+					}
+				}
+				.text{
+					width: 100%;
+					display: flex;
+					justify-content: center;
+					font-size: 26upx;
+					color: #3d3d3d;
+				}
+			}
+		}
+	}
+
+	.tips_distribution {
+		button {
+			margin-top: 10px;
+			line-height: 30px;
 		}
 	}
 </style>
