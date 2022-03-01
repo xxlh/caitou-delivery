@@ -48,6 +48,7 @@
     "@dcloudio/uni-mp-weixin": "^3.0.0-alpha-3030820220114004",
     "@dcloudio/uni-quickapp-webview": "^3.0.0-alpha-3030820220114004",
     "@dcloudio/uni-ui": "^1.4.11",
+    "moment": "^2.29.1",
     "uview-ui": "^2.0.24",
     "vue": "^3.2.27",
     "vue-i18n": "^9.1.9",

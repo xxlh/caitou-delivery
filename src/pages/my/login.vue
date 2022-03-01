@@ -42,8 +42,9 @@
 </template>
 
 <script>
-	import {mapState, mapMutations, mapActions} from 'vuex'
-	import {get, post} from '@/common/request';
+	import {mapState, mapMutations, mapActions} from 'vuex';
+	import {get, post, request} from '@/common/request';
+	import Tracking from '@/common/tracking';
 	// import md5 from "@/common/SDK/md5.min.js";
 	export default {
 		data() {
@@ -245,6 +246,19 @@
 							});
 						}
 					});
+
+					// 追踪实时定位
+					const tracking = new Tracking({
+						interval: 300,
+						onChange(res) {
+							request({
+								url: 'auth/location',
+								data: res,
+								method: 'patch',
+							});
+						}
+					});
+					tracking.init();
 
 					setTimeout(() => {
 						if (this.referenceURL.indexOf('/tabBar') != -1) {

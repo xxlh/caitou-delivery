@@ -17,7 +17,7 @@
 		<view class="user" v-if="isLogin">
 			<!-- 头像 -->
 			<view class="left">
-				<image :src="_userinfo.avatar_url" @tap="toSetting"></image>
+				<image :src="_userinfo.avatar_url || '/static/img/face.jpg'" @tap="toSetting"></image>
 			</view>
 			<!-- 昵称,个性签名 -->
 			<view class="right" @tap="toSetting">
@@ -29,7 +29,7 @@
 				<view class="icon qr"></view>
 			</view>
 		</view>
-		<view class="user" v-if="!isLogin">
+		<view class="user" v-if="!isLogin" @tap="toLogin">
 			<view class="left">
 				<image src="/static/img/face.jpg"></image>
 			</view>

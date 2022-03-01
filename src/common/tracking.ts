@@ -13,7 +13,7 @@ class Tracking {
     interval = 30000;
     onChange = (res:LocationResult) => {};
 
-    constructor(parameters:{interval?:number, onChange:()=>void}) {
+    constructor (parameters:{interval?:number, onChange:()=>void}) {
         if (parameters.interval) this.interval = parameters.interval*1000;
         this.onChange = parameters.onChange;
     }

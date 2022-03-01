@@ -1,31 +1,38 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/index/order",
+			"path": "pages/index/deal",
 			"style": {
 				"navigationBarTitleText": "配送订单",
                 "enablePullDownRefresh": true
 			}
-		},
-		{
+		}, {
+			"path": "pages/index/deal-history",
+			"style": {
+				"navigationBarTitleText": "历史配送订单",
+                "enablePullDownRefresh": true
+			}
+		}, {
+			"path": "pages/index/deal-detail",
+			"style": {
+				"navigationBarTitleText": "配送单取货"
+			}
+		}, {
 			"path": "pages/location-poc/web",
 			"style": {
 				"navigationBarTitleText": "uni location"
 			}
-		},
-		{
+		}, {
 			"path": "pages/location-poc/native",
 			"style": {
 				"navigationBarTitleText": "native locaiton"
 			}
-		},
-		{
+		}, {
 			"path": "pages/my/my",
 			"style": {
 				"navigationBarTitleText": "个人中心"
 			}
-		},
-		{
+		}, {
 			"path": "pages/my/login",
 			"style": {
 				"navigationBarTitleText": "登陆"
@@ -51,12 +58,11 @@
 		"borderStyle": "black",
 		"backgroundColor": "#ffffff",
 		"list": [{
-				"pagePath": "pages/index/order",
+				"pagePath": "pages/index/deal",
 				"iconPath": "static/tabs/home.png",
 				"selectedIconPath": "static/tabs/home-on.png",
 				"text": "首页"
-			},
-			{
+			}, {
 				"pagePath": "pages/my/my",
 				"iconPath": "static/tabs/user.png",
 				"selectedIconPath": "static/tabs/user-on.png",
