@@ -16,7 +16,7 @@ function request(options:any) {
 					let currentPage:any = pages[pages.length - 1];
 					let currentParam = currentPage.options || currentPage.$route.query;
 					let currentQuery = Object.keys(currentParam).map(key => key+'='+currentParam[key]).join('&');
-					if(currentPage.route == 'pages/my/login' ) reject(res.data);
+					if(currentPage.route == 'pages/my/login' ) {reject(res.data); return}
 					uni.redirectTo({
 						url: '/pages/my/login?referenceURL=' + encodeURIComponent('/' + currentPage.route + (currentQuery?'?'+currentQuery:''))
 					});

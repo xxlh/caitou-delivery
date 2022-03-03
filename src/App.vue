@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
 import Tracking from '@/common/tracking'
+import {get, post, request} from '@/common/request';
 import { computed } from "vue";
 import { useStore } from 'vuex'
 

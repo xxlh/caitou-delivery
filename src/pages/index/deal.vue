@@ -49,7 +49,7 @@ moment.locale('zh-cn');
 
 const store = useStore()
 const deals = reactive([])
-const isLoading = ref(true)
+const isLoading = ref(false)
 const props = defineProps({
 	history: Boolean,
 })
