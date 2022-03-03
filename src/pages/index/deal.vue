@@ -43,7 +43,6 @@
 import { reactive, ref, computed, onMounted } from 'vue'
 import { useStore, mapState } from 'vuex'
 import {get, post, request} from '@/common/request';
-import Tracking from '@/common/tracking'
 import { onPullDownRefresh, onShow } from '@dcloudio/uni-app';
 import moment from 'moment/min/moment-with-locales'
 moment.locale('zh-cn');
@@ -58,21 +57,6 @@ const props = defineProps({
 let isLogin = computed(() => {
 	return store.state._token && store.state._userinfo;
 })
-
-if (isLogin.value && !props.history) {
-	// 追踪实时定位
-	const tracking = new Tracking({
-		interval: 300,
-		onChange(res) {
-			request({
-				url: 'auth/location',
-				data: res,
-				method: 'patch',
-			});
-		}
-	});
-	tracking.init();
-}
 
 onShow(() => {
 	if (isLogin.value) {

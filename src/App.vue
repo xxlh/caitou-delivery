@@ -1,11 +1,37 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
+import Tracking from '@/common/tracking'
+import { computed } from "vue";
+import { useStore } from 'vuex'
+
+const store = useStore()
+let isLogin = computed(() => {
+	return store.state._token && store.state._userinfo;
+})
+
 onLaunch(() => {
   console.log("App Launch");
+
+	if (isLogin.value) {
+		// 追踪实时定位
+		const tracking = new Tracking({
+			interval: 300,
+			onChange(res) {
+				request({
+					url: 'auth/location',
+					data: res,
+					method: 'patch',
+				});
+			}
+		});
+		tracking.init();
+	}
 });
+
 onShow(() => {
   console.log("App Show");
 });
+
 onHide(() => {
   console.log("App Hide");
 });
