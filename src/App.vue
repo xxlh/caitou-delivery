@@ -13,14 +13,49 @@ let isLogin = computed(() => {
 onLaunch(() => {
   console.log("App Launch");
 
+	/* 推送消息处理 */
+	// #ifdef APP-PLUS
+	// 推送消息点击响应
+	plus.push.addEventListener(
+		'click',
+		function(msg) {
+			console.log(msg);
+			uni.showModal({
+				title: msg.title,
+				content: msg.content,
+				showCancel: false,
+			})
+		},
+		false
+	);
+	// 透传消息接收响应
+	plus.push.addEventListener(
+		'receive',
+		function(msg) {
+			console.log(msg);
+			uni.showModal({
+				title: msg.title,
+				content: msg.content,
+				showCancel: false,
+			})
+		},
+		false
+	);
+	// #endif
+
+	/* 追踪实时定位 */
 	if (isLogin.value) {
-		// 追踪实时定位
+		let cid = '';
+		// #ifdef APP-PLUS
+		cid = plus.push.getClientInfo().clientid; //客户端标识
+		// #endif
+		console.log('cid: ' + cid);
 		const tracking = new Tracking({
 			interval: 300,
 			onChange(res) {
 				request({
 					url: 'auth/location',
-					data: res,
+					data: {...res, cid},
 					method: 'patch',
 				});
 			}

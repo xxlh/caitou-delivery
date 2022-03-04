@@ -14,8 +14,11 @@ function request(options:any) {
 				} else if (res.statusCode === 401) {
 					let pages= getCurrentPages();
 					let currentPage:any = pages[pages.length - 1];
-					let currentParam = currentPage.options || currentPage.$route.query;
-					let currentQuery = Object.keys(currentParam).map(key => key+'='+currentParam[key]).join('&');
+					let currentQuery = null;
+					// #ifndef APP-PLUS
+					let currentParam = currentPage.options || currentPage.$route.query;	// 安卓下 currentPage.$route 为空
+					currentQuery = Object.keys(currentParam).map(key => key+'='+currentParam[key]).join('&');
+					// #endif
 					if(currentPage.route == 'pages/my/login' ) {reject(res.data); return}
 					uni.redirectTo({
 						url: '/pages/my/login?referenceURL=' + encodeURIComponent('/' + currentPage.route + (currentQuery?'?'+currentQuery:''))

@@ -35,7 +35,7 @@ export default {
 	selectedAddress: null,
 	editingAddress: null,
 	cityNow: "",
-	baseUrl: process.env.NODE_ENV === 'development' ? "http://delivery-api-dev.caitou.ieexx.com/" : 'https://delivery-api.caitou.ieexx.com/',
+	baseUrl: process.env.NODE_ENV === 'development' ? "http://delivery-api.caitou.ieexx.com/" : 'https://delivery-api.caitou.ieexx.com/',
 	UserBaseUrl: process.env.NODE_ENV === 'development' ? "http://user-api-dev.caitou.ieexx.com/	" : 'https://user-api.caitou.ieexx.com/',
 	MainBaseUrl: process.env.NODE_ENV === 'development' ? "http://api-dev.caitou.ieexx.com/	" : 'https://api.caitou.ieexx.com/',
 	shareParams: {
