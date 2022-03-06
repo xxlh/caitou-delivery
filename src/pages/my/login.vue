@@ -248,12 +248,16 @@
 					});
 
 					// 追踪实时定位
+					let cid = '';
+					// #ifdef APP-PLUS
+					cid = plus.push.getClientInfo().clientid; //客户端标识
+					// #endif
 					const tracking = new Tracking({
 						interval: 300,
 						onChange(res) {
 							request({
 								url: 'auth/location',
-								data: res,
+								data: {...res, cid},
 								method: 'patch',
 							});
 						}

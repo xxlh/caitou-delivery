@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
 import Tracking from '@/common/tracking'
+import permision from "@/common/permission.js"
 import {get, post, request} from '@/common/request';
 import { computed } from "vue";
 import { useStore } from 'vuex'
@@ -34,7 +35,7 @@ onLaunch(() => {
 		function(msg) {
 			console.log(msg);
 			uni.showModal({
-				title: msg.title,
+				title: '^_^ ' + msg.title,
 				content: msg.content,
 				showCancel: false,
 			})
@@ -48,6 +49,10 @@ onLaunch(() => {
 		let cid = '';
 		// #ifdef APP-PLUS
 		cid = plus.push.getClientInfo().clientid; //客户端标识
+		// 权限判断, Deprecated: 交给获取不到位置的错误弹窗
+		// (async () => {
+		// 	if (await permision.requestAndroidPermission('android.permission.ACCESS_FINE_LOCATION') != 1) permision.gotoAppPermissionSetting();
+		// })()
 		// #endif
 		console.log('cid: ' + cid);
 		const tracking = new Tracking({

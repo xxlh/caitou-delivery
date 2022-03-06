@@ -1,3 +1,5 @@
+import permision from "@/common/permission.js"
+
 type LocationResult = {
     lng: number,
     lat: number,
@@ -71,7 +73,10 @@ class Tracking {
                 uni.showModal({
 					title: '定位获取失败',
 					content: '请到系统设置->应用管理 中开启本App的定位权限为【始终允许】',
-					showCancel: false
+					showCancel: false,
+                    success: () => {
+                        permision.gotoAppPermissionSetting();
+                    }
                 });
                 // #ifdef APP-PLUS
                 this.wxp_Amap = uni.requireNativePlugin("WXP-Amap");
