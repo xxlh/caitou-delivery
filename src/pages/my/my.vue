@@ -82,9 +82,11 @@
 		async onLoad() {
 			this.statusHeight = 0;
 			// #ifdef APP-PLUS
-			this.version = plus.runtime.version;
 			this.showHeader = false;
 			this.statusHeight = plus.navigator.getStatusbarHeight();
+			plus.runtime.getProperty(plus.runtime.appid, widgetInfo => {
+				this.version = widgetInfo.version;
+			});
 			// #endif
 		},
 		onShow(){
