@@ -37,6 +37,10 @@
 				<view class="username">登陆 / 注册</view>
 			</view>
 		</view>
+		<view class="content">
+
+		</view>
+		<view class="version" v-if="version">当前版本：v{{version}}</view>
 		<!-- 占位 -->
 		<view class="place-bottom"></view>
 	</view>
@@ -54,6 +58,7 @@
 				headerTop:null,
 				statusTop:null,
 				showHeader:true,
+				version: '',
 			}
 		},
 		computed: {
@@ -77,6 +82,7 @@
 		async onLoad() {
 			this.statusHeight = 0;
 			// #ifdef APP-PLUS
+			this.version = plus.runtime.version;
 			this.showHeader = false;
 			this.statusHeight = plus.navigator.getStatusbarHeight();
 			// #endif
@@ -205,6 +211,9 @@
 				font-size: 42upx;
 			}
 		}
+	}
+	.content {
+		min-height: 60vh;
 	}
 	.order{
 		width: 84%;
@@ -378,6 +387,11 @@
 				}
 			}
 		}
+	}
+	.version {
+		text-align: center;
+		font-size: 20upx;
+		color: #999;
 	}
 
 	.tips_distribution {

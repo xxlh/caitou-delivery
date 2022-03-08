@@ -45,7 +45,6 @@
 	import {mapState, mapMutations, mapActions} from 'vuex';
 	import {get, post, request} from '@/common/request';
 	import Tracking from '@/common/tracking';
-	// import md5 from "@/common/SDK/md5.min.js";
 	export default {
 		data() {
 			return {

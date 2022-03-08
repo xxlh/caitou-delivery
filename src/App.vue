@@ -3,6 +3,7 @@ import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
 import Tracking from '@/common/tracking'
 import permision from "@/common/permission.js"
 import {get, post, request} from '@/common/request';
+import checkUpdate from "@/uni_modules/uni-upgrade-center-app/utils/check-update"
 import { computed } from "vue";
 import { useStore } from 'vuex'
 
@@ -67,6 +68,9 @@ onLaunch(() => {
 		});
 		tracking.init();
 	}
+
+	/* 检查更新 */
+	checkUpdate();
 });
 
 onShow(() => {
