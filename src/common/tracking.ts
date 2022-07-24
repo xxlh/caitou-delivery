@@ -75,7 +75,9 @@ class Tracking {
 					content: '请到系统设置->应用管理 中开启本App的定位权限为【始终允许】',
 					showCancel: false,
                     success: () => {
+                        // #ifdef APP-PLUS
                         permision.gotoAppPermissionSetting();
+                        // #endif
                     }
                 });
                 // #ifdef APP-PLUS

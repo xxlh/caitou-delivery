@@ -13,7 +13,7 @@
 			<view class="password">
 				<input placeholder="请输入密码" v-model="passwd" password=true placeholder-style="color: rgba(255,255,255,0.8);"/>
 			</view>
-			<view class="btn" @tap="doLogin">登 录</view>
+			<view class="btn" @tap="pwdLogin">登 录</view>
 			<view class="res">
 				<view @tap="toPage('register')">用户注册</view>
 				<view @tap="toPage('resetpasswd')">忘记密码</view>
@@ -212,7 +212,7 @@
 					url: page
 				});
 			},
-			doLogin(){
+			pwdLogin(){
 				uni.hideKeyboard();
 				//验证手机号码
 				if(!(/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.phoneNumber))){ 
@@ -264,13 +264,13 @@
 					tracking.init();
 
 					setTimeout(() => {
-						if (this.referenceURL.indexOf('/tabBar') != -1) {
-							uni.switchTab({
-								url: this.referenceURL
-							});
-						} else if (this.referenceURL) {
+						if (this.referenceURL) {
 							uni.redirectTo({
 								url: this.referenceURL
+							}).catch(err => {
+								uni.switchTab({
+									url: this.referenceURL
+								});
 							});
 						}else{
 							uni.navigateBack();

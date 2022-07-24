@@ -10,9 +10,9 @@
 					</view>
 				</view>
 			</template>
-			<view class="actions">
-				<button type="primary" size="mini" :disabled="packing.man_status!='pending'" :plain="packing.man_status!='pending'" @tap="arrived(packing.store_id)">已到店</button>
-				<button type="primary" size="mini" :disabled="packing.man_status=='fetched'" :plain="packing.man_status!='arrived'" @tap="fetched(packing.store_id)">已取货</button>
+			<view v-if="!isForwarding" class="actions">
+				<button type="primary" size="mini" :disabled="packing.man_status!='pending'" :plain="packing.man_status!='pending'" @tap="arrived(packing.store_id)">{{packing.man_status=='pending' ? '确认到店' : '已到店'}}</button>
+				<button type="primary" size="mini" :disabled="packing.man_status=='fetched'" :plain="packing.man_status!='arrived'" @tap="fetched(packing.store_id)">{{packing.man_status!='fetched' ? '确认取货' : '已取货'}}</button>
 			</view>
 			<uni-swipe-action>
 				<uni-swipe-action-item class="items" v-for="item in deal.data.items.slice(0,3)" :key="item.id" :right-options="itemActions" @click="actionClick(item)">
@@ -39,7 +39,7 @@
 			</uni-swipe-action>
 		</uni-card>
 		<!-- 送达点 -->
-		<view class="destination" :class="isAllFetched?'focus':''">
+		<view v-if="!isForwarding" class="destination" :class="isAllFetched?'focus':''">
 			<view style="display:flex; justify-content:space-between;">
 				<view class="address" @tap="openMap(deal.data.address.longitude, deal.data.address.latitude)">
 					<image src="@/static/img/addricon.png" mode="aspectFit"></image>
@@ -63,6 +63,31 @@
 			<button v-if="deal.data.man_status!='delivered'" type="primary" :disabled="!isAllFetched" @tap="delivered">确认送达</button>
 			<button v-else type="primary" disabled plain>已送达</button>
 		</view>
+		<view v-else class="destination">
+			<view style="display:flex; justify-content:space-between;">
+				<view class="address" @tap="openMap(deal.data.address.longitude, deal.data.address.latitude)">
+					<uni-icons type="person" size="40" style="color:#007aff"></uni-icons>
+					<view>
+						<view class="tel-name">
+							<view class="name">
+								{{deal.data.waiting_forward.from_man.name}}
+							</view>
+							<view class="tel">
+								{{deal.data.waiting_forward.from_man.phone}}
+							</view>
+						</view>
+						<view class="addres">{{deal.data.waiting_forward.remark}}</view>
+					</view>
+				</view>
+				<view>
+					<uni-icons type="phone" size="40" style="color:#007aff" v-if="deal.data.waiting_forward.from_man.phone" @tap="makeCall(deal.data.waiting_forward.from_man.phone)"></uni-icons>
+				</view>
+			</view>
+			<view style="display:flex">
+				<button type="primary" @tap="deal" style="width: 45%">接单</button>
+				<button type="warn" plain @tap="deal" style="width: 45%">谢绝</button>
+			</view>
+		</view>
 	</view>
 	<view v-else-if="isLoading" class="loading">
 		<image src="@/static/img/loading.gif"></image>
@@ -83,6 +108,7 @@ import _ from 'lodash';
 const store = useStore()
 const deal = reactive({data: {}})
 const isLoading = ref(true)
+const isForwarding = ref(false)
 
 let isLogin = computed(() => {
 	return store.state._token && store.state._userinfo;
@@ -95,6 +121,7 @@ onLoad(async (params) => {
 	if (!params.id) return;
 	isLoading.value = true;
 	deal.data = await get('deals/' + params.id);
+	if (deal.data.delivery_man_id != store.state._userinfo.id && deal.data.waiting_forward) isForwarding.value = true;
 	isLoading.value = false;
 })
 
