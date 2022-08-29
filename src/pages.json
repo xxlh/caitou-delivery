@@ -4,18 +4,34 @@
 			"path": "pages/index/deal",
 			"style": {
 				"navigationBarTitleText": "配送订单",
-                "enablePullDownRefresh": true
+                "enablePullDownRefresh": true,
+				"backgroundColor": "#fafafa"
 			}
 		}, {
 			"path": "pages/index/deal-history",
 			"style": {
 				"navigationBarTitleText": "历史配送订单",
-                "enablePullDownRefresh": true
+                "enablePullDownRefresh": true,
+				"backgroundColor": "#eee"
 			}
 		}, {
 			"path": "pages/index/deal-detail",
 			"style": {
-				"navigationBarTitleText": "配送单取货"
+				"navigationBarTitleText": "配送单取货",
+				"backgroundColor": "#eee"
+			}
+		}, {
+			"path": "pages/direction/direction",
+			"style": {
+				"navigationBarTitleText": "配送线路规划",
+                "enablePullDownRefresh": true,
+				"backgroundColor": "#eee"
+			}
+		}, {
+			"path": "pages/direction/packing-detail",
+			"style": {
+				"navigationBarTitleText": "取货点货单",
+				"backgroundColor": "#eee"
 			}
 		}, {
 			"path": "pages/location-poc/web",
@@ -76,7 +92,12 @@
 				"pagePath": "pages/index/deal",
 				"iconPath": "static/tabs/home.png",
 				"selectedIconPath": "static/tabs/home-on.png",
-				"text": "首页"
+				"text": "订单"
+			}, {
+				"pagePath": "pages/direction/direction",
+				"iconPath": "static/tabs/direction.png",
+				"selectedIconPath": "static/tabs/direction-on.png",
+				"text": "路线"
 			}, {
 				"pagePath": "pages/my/my",
 				"iconPath": "static/tabs/user.png",

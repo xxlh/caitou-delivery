@@ -40,7 +40,7 @@ Run `npm run build` to build android assets
 Run `Build`->`Build Bundle(s)/APK(s)`->`APK(s)` in Android Studio with android reposity above
 
 ### Deploy in Production
-Upload APK to `升级中心` at http://upgrade.admin.caitou.ieexx.com/
+Upload APK to `升级中心` at http://upgrade.admin.caitou.ieexx.com/admin
 
 User will get automatic upgrading prompt after App launching
 

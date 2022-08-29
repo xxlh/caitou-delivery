@@ -88,7 +88,7 @@ moment.locale('zh-cn');
 const store = useStore()
 let deals = reactive([])
 let forwards = reactive([])
-const isLoading = ref(false)
+const isLoading = ref(true)
 const forwardDealId = ref(0)
 const forwardPopup = ref(null)
 const rejectPopup = ref(null)
@@ -103,9 +103,11 @@ let isLogin = computed(() => {
 	return store.state._token && store.state._userinfo;
 })
 
-onShow(() => {
+onMounted(() => {
 	if (isLogin.value) {
-		uni.startPullDownRefresh({});
+		setTimeout(() => {
+			uni.startPullDownRefresh({});
+		}, 1);
 	}
 })
 
@@ -183,6 +185,7 @@ let confirmRejection = ref(reason => {})
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	background-color: #fafafa;
 }
 .deal-card {
 	width: 90vw;

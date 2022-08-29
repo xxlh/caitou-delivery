@@ -1,33 +1,33 @@
 <template>
-	<view v-if="deal.data.packings" class="page">
+	<view v-if="deals.data" class="page">
 		<!-- 取货点 -->
-		<uni-card class="packing" v-for="packing in deal.data.packings" :key="packing.id" :title="'取货: '+packing.name" extra="导航前往">
+		<uni-card class="packing" v-for="deal in deals.data" :key="deal.id" :title="'送往: '+deal.address.address" extra="导航前往">
 			<template v-slot:title>
 				<view class="packing-title">
-					<text>取货点: {{packing.name}}</text>
-					<view class="extra" @tap="openMap(packing.store.longitude, packing.store.latitude)" v-if="packing.store.longitude && packing.store.latitude">
+					<text>#{{deal.id}} 送往: {{deal.address.full_address || deal.address.address}}</text>
+					<view class="extra" @tap="openMap(deal.address.longitude, deal.address.latitude)" v-if="deal.address.longitude && deal.address.latitude">
 						<uni-icons type="navigate" size="20"></uni-icons> 导航前往
 					</view>
 				</view>
 			</template>
-			<view v-if="!isForwarding" class="actions">
-				<button type="primary" size="mini" :disabled="packing.man_status!='pending'" :plain="packing.man_status!='pending'" @tap="arrived(packing.store_id)">{{packing.man_status=='pending' ? '确认到店' : '已到店'}}</button>
-				<button type="primary" size="mini" :disabled="packing.man_status=='fetched'" :plain="packing.man_status!='arrived'" @tap="fetched(packing.store_id)">{{packing.man_status!='fetched' ? '确认取货' : '已取货'}}</button>
+			<view class="actions">
+				<!-- <button type="primary" size="mini" :disabled="deal.packing.man_status!='pending'" :plain="deal.packing.man_status!='pending'" @tap="arrived(deal.id, deal.packing.store_id)">{{deal.packing.man_status=='pending' ? '确认到店' : '已到店'}}</button> -->
 			</view>
+			<button type="primary" size="mini" :disabled="deal.packing.man_status=='fetched'" :plain="deal.packing.man_status!='arrived'" @tap="fetched(deal.id, deal.packing.store_id)" style="width: 100%">{{deal.packing.man_status!='fetched' ? '确认取货' : '已取货'}}</button>
 			<uni-swipe-action>
-				<uni-swipe-action-item class="items" v-for="item in deal.data.items.slice(0,3)" :key="item.id" :right-options="itemActions" @click="actionClick(item)">
+				<uni-swipe-action-item class="items" v-for="item in deal.items.slice(0,3)" :key="item.id" :right-options="itemActions" @click="actionClick(item)">
 					<view class="item-title">{{item.title}}</view>
 					<view class="item-info">
 						<view class="item-sku">{{item.sku_name}}</view>
 						<view>{{item.count}}</view>
 					</view>
 				</uni-swipe-action-item>
-				<uni-collapse v-if="deal.data.items.length > 3">
+				<uni-collapse v-if="deal.items.length > 3">
 					<uni-collapse-item title-border="none" :border="false">
 						<template v-slot:title>
 							<text class="more">展开更多商品...</text>
 						</template>
-						<uni-swipe-action-item class="items" v-for="item in deal.data.items.slice(3)" :key="item.id" :right-options="itemActions" @click="actionClick(item)">
+						<uni-swipe-action-item class="items" v-for="item in deal.items.slice(3)" :key="item.id" :right-options="itemActions" @click="actionClick(item)">
 							<view class="item-title">{{item.title}}</view>
 							<view class="item-info">
 								<view class="item-sku">{{item.sku_name}}</view>
@@ -39,47 +39,25 @@
 			</uni-swipe-action>
 		</uni-card>
 		<view style="color: #999; font-size: 28upx; margin-top: 30upx; width: 90%; text-align: center;">请确认订单中的每个商品及数量<br />被客户发现数量错误将承担责任</view>
-		<!-- 送达点 -->
-		<view v-if="!isForwarding" class="destination" :class="isAllFetched?'focus':''">
+		<!-- 仓储信息 -->
+		<view v-if="deals.store" class="destination" :class="isAllFetched?'focus':''">
 			<view style="display:flex; justify-content:space-between;">
-				<view class="address" @tap="openMap(deal.data.address.longitude, deal.data.address.latitude)">
+				<view class="address" @tap="openMap(deals.store.longitude, deals.store.latitude)">
 					<image src="@/static/img/addricon.png" mode="aspectFit"></image>
 					<view>
 						<view class="tel-name">
-							<text class="name">{{deal.data.address.contact_name}}</text>
-							<text class="tel">{{deal.data.address.contact_phone}}</text>
+							<text class="name">取货点：{{deals.store.name}}</text>
 						</view>
-						<view class="addres">{{deal.data.address.address}}</view>
+						<view class="addres">{{deals.store.address}}</view>
 					</view>
 				</view>
 				<view>
-					<uni-icons type="phone" size="40" style="color:#007aff" v-if="deal.data.address.contact_phone" @tap="makeCall(deal.data.address.contact_phone)"></uni-icons>
-					<uni-icons type="navigate" size="40" style="color:#007aff" v-if="deal.data.address.longitude && deal.data.address.latitude" @tap="openMap(deal.data.address.longitude, deal.data.address.latitude)"></uni-icons>
+					<uni-icons type="phone" size="40" style="color:#007aff" v-if="deals.store.contact_phone" @tap="makeCall(deals.store.contact_phone)"></uni-icons>
+					<uni-icons type="navigate" size="40" style="color:#007aff" v-if="deals.store.longitude && deals.store.latitude" @tap="openMap(deals.store.longitude, deals.store.latitude)"></uni-icons>
 				</view>
 			</view>
-			<button v-if="deal.data.man_status!='delivered'" type="primary" :disabled="!isAllFetched" @tap="delivered">确认送达</button>
-			<button v-else type="primary" disabled plain>已送达</button>
-		</view>
-		<view v-else class="destination">
-			<view style="display:flex; justify-content:space-between;">
-				<view class="address" @tap="openMap(deal.data.address.longitude, deal.data.address.latitude)">
-					<uni-icons type="person" size="40" style="color:#007aff"></uni-icons>
-					<view>
-						<view class="tel-name">
-							<text class="name">{{deal.data.waiting_forward.from_man.name}}</text>
-							<text class="tel">{{deal.data.waiting_forward.from_man.phone}}</text>
-						</view>
-						<view class="addres">{{deal.data.waiting_forward.remark}}</view>
-					</view>
-				</view>
-				<view>
-					<uni-icons type="phone" size="40" style="color:#007aff" v-if="deal.data.waiting_forward.from_man.phone" @tap="makeCall(deal.data.waiting_forward.from_man.phone)"></uni-icons>
-				</view>
-			</view>
-			<view style="display:flex">
-				<button type="primary" @tap="deal" style="width: 45%">接单</button>
-				<button type="warn" plain @tap="deal" style="width: 45%">谢绝</button>
-			</view>
+			<button v-if="deals.data.reduce((t,c) => t + (c.packing.man_status=='pending'), false)" type="primary" :disabled="!isAllFetched" @tap="allArrived(deals.store.id)">确认到店</button>
+			<button v-else type="primary" disabled plain>已到店</button>
 		</view>
 	</view>
 	<view v-else-if="isLoading" class="loading">
@@ -99,22 +77,22 @@ import { onLoad } from '@dcloudio/uni-app';
 import _ from 'lodash';
 
 const store = useStore()
-const deal = reactive({data: {}})
+const deals = reactive({data: [], store:{}})
 const isLoading = ref(true)
-const isForwarding = ref(false)
 
 let isLogin = computed(() => {
 	return store.state._token && store.state._userinfo;
 })
 let isAllFetched = computed(() => {
-	return _.every(deal.data.packings, {'man_status': 'fetched'});
+	return _.every(deals.data.packings, {'man_status': 'fetched'});
 })
 
 onLoad(async (params) => {
 	if (!params.id) return;
 	isLoading.value = true;
-	deal.data = await get('deals/' + params.id);
-	if (deal.data.delivery_man_id != store.state._userinfo.id && deal.data.waiting_forward) isForwarding.value = true;
+	let res = await get('auth/deals?per_page=99&store_id=' + params.id);
+	deals.data = res.data
+	deals.store = res.store
 	isLoading.value = false;
 })
 
@@ -140,32 +118,26 @@ const openMap = (lng:number, lat:number) => {
 }
 
 /* 订单状态操作 */
-const arrived = (store_id:number) => {
-	post(`deals/${deal.data.id}/stores/${store_id}/arrived`).then(() => {
-		deal.data.packings.forEach((packing, i) => {
-			if (packing.store_id == store_id) deal.data.packings[i].man_status = 'arrived';
+const arrived = (id:number, store_id:number) => {
+	post(`deals/${id}/stores/${store_id}/arrived`).then(() => {
+		deals.data.forEach((deal, i) => {
+			if (deal.id == id) deals.data[i].packing.man_status = 'arrived';
 		});
 	});
 }
-const fetched = (store_id:number) => {
-	post(`deals/${deal.data.id}/stores/${store_id}/fetched`).then(() => {
-		deal.data.packings.forEach((packing, i) => {
-			if (packing.store_id == store_id) deal.data.packings[i].man_status = 'fetched';
+const allArrived = (store_id:number) => {
+	deals.data.forEach((deal, i) => {
+		post(`deals/${deal.id}/stores/${store_id}/arrived`).then(() => {
+			deals.data[i].packing.man_status = 'arrived';
 		});
 	});
 }
-const delivered = () => {
-	uni.showModal({
-		title: '确认已经送达客户手上',
-		content: '(除非客户同意放某处)\n注意：提前结单会影响绩效！',
-		confirmText: '确认送达',
-		success: () => {
-			post(`deals/${deal.data.id}/delivered`).then(() => {
-				deal.data.man_status = 'delivered';
-				deal.data.status = 'delivered';
-			});
-		},
-	})
+const fetched = (id:number, store_id:number) => {
+	post(`deals/${id}/stores/${store_id}/fetched`).then(() => {
+		deals.data.forEach((deal, i) => {
+			if (deal.id == id) deals.data[i].packing.man_status = 'fetched';
+		});
+	});
 }
 
 /* 商品操作 */
