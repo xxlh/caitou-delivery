@@ -76,13 +76,9 @@ import {get, post, request} from '@/common/request';
 import { onLoad } from '@dcloudio/uni-app';
 import _ from 'lodash';
 
-const store = useStore()
 const deals = reactive({data: [], store:{}})
 const isLoading = ref(true)
 
-let isLogin = computed(() => {
-	return store.state._token && store.state._userinfo;
-})
 let isAllFetched = computed(() => {
 	return _.every(deals.data.packings, {'man_status': 'fetched'});
 })

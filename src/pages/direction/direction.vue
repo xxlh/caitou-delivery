@@ -79,7 +79,7 @@
 	<view v-else-if="isLoading" class="loading">
 		<image src="@/static/img/loading.gif"></image>
 	</view>
-	<view v-else-if="!isLogin" mode="order" class="empty">
+	<view v-else-if="!store.getters.isLogin" mode="order" class="empty">
 		<image src="@/static/img/noorder.png"></image>
 		<text>请先登陆！</text>
 	</view>
@@ -110,12 +110,8 @@ const fetchPopup = ref(null)
 const rejectPopup = ref(null)
 const stopGoto = ref(false)
 
-let isLogin = computed(() => {
-	return store.state._token && store.state._userinfo;
-})
-
 onMounted(() => {
-	if (isLogin.value) {
+	if (store.getters.isLogin) {
 		setTimeout(() => {
 			uni.startPullDownRefresh({});
 		}, 1);
@@ -125,10 +121,10 @@ onMounted(() => {
 onPullDownRefresh(async () => {
 	isLoading.value = true;
 	if (currentTab.value == 0) {
-		directions.dataByDue = (await get('auth/directions')).data;
+		directions.dataByDue = (await get(`auth/directions?lng=${store.state.currentLocation.lng}&lat=${store.state.currentLocation.lat}`)).data;
 		directions.data = directions.dataByDue;
 	} else if (currentTab.value == 1) {
-		directions.dataByDistance = (await get('auth/directions?sort=distance')).data;
+		directions.dataByDistance = (await get(`auth/directions?sort=distance&lng=${store.state.currentLocation.lng}&lat=${store.state.currentLocation.lat}`)).data;
 		directions.data = directions.dataByDistance;
 	}
 	uni.stopPullDownRefresh();

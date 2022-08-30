@@ -14,6 +14,7 @@ export default {
 	loginProvider: "",
 	loginProviderList: [],
 	_userinfo: userinfo,
+	currentLocation: {lng:"", lat:""},
 	$men_nearby: null,
 	$referred_by: null,
 	baseUrl: process.env.NODE_ENV === 'development' ? "http://delivery-api-dev.caitou.ieexx.com/" : 'https://delivery-api.caitou.ieexx.com/',

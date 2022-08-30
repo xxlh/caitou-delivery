@@ -103,9 +103,6 @@ const deal = reactive({data: {}})
 const isLoading = ref(true)
 const isForwarding = ref(false)
 
-let isLogin = computed(() => {
-	return store.state._token && store.state._userinfo;
-})
 let isAllFetched = computed(() => {
 	return _.every(deal.data.packings, {'man_status': 'fetched'});
 })

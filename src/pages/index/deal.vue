@@ -61,7 +61,7 @@
 	<view v-else-if="isLoading" class="loading">
 		<image src="@/static/img/loading.gif"></image>
 	</view>
-	<view v-else-if="!isLogin" mode="order" class="empty">
+	<view v-else-if="!store.getters.isLogin" mode="order" class="empty">
 		<image src="@/static/img/noorder.png"></image>
 		<text>请先登陆！</text>
 	</view>
@@ -99,12 +99,8 @@ const props = defineProps({
 	history: Boolean,
 })
 
-let isLogin = computed(() => {
-	return store.state._token && store.state._userinfo;
-})
-
 onMounted(() => {
-	if (isLogin.value) {
+	if (store.getters.isLogin) {
 		setTimeout(() => {
 			uni.startPullDownRefresh({});
 		}, 1);

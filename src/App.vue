@@ -8,9 +8,6 @@ import { computed } from "vue";
 import { useStore } from 'vuex'
 
 const store = useStore()
-let isLogin = computed(() => {
-	return store.state._token && store.state._userinfo;
-})
 
 onLaunch(() => {
   console.log("App Launch");
@@ -46,7 +43,7 @@ onLaunch(() => {
 	// #endif
 
 	/* 追踪实时定位 */
-	if (isLogin.value) {
+	if (store.getters.isLogin) {
 		let cid = '';
 		// #ifdef APP-PLUS
 		cid = plus.push.getClientInfo().clientid; //客户端标识
@@ -59,6 +56,7 @@ onLaunch(() => {
 		const tracking = new Tracking({
 			interval: 300,
 			onChange(res) {
+				store.state.currentLocation = res
 				request({
 					url: 'auth/location',
 					data: {...res, cid},
