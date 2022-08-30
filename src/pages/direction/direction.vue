@@ -79,7 +79,7 @@
 	<view v-else-if="isLoading" class="loading">
 		<image src="@/static/img/loading.gif"></image>
 	</view>
-	<view v-else-if="!store.getters.isLogin" mode="order" class="empty">
+	<view v-else-if="!store.getters.isLogin" mode="order" class="empty" @tap="goto('/pages/my/login')">
 		<image src="@/static/img/noorder.png"></image>
 		<text>请先登陆！</text>
 	</view>
@@ -115,7 +115,7 @@ onMounted(() => {
 		setTimeout(() => {
 			uni.startPullDownRefresh({});
 		}, 1);
-	}
+	} else isLoading.value = false
 })
 
 onPullDownRefresh(async () => {
