@@ -22,13 +22,15 @@ See more: https://uniapp.dcloud.io/quickstart.html#修改依赖为指定版本
 
 Run `发行`->`原生App-云打包`, check `打自定义调试基座` in HBuilderX
 
-## Debuge
+## Debug
 
 Run `/Users/Esone/Library/Android/sdk/emulator  -avd Pixel_2_API_27 -dns-server 8.8.8.8` to ensure the android emulator can connect to network
 
 (未验证，理论实现差量编译) Relink with build source to Android assets source by `ln -s dist/dev/app /Users/xxx/AndroidStudioProjects/Caitou-Delivery/app/src/main/assets/apps/__UNI__ECEC08F/www`
 
 Click `Make Project` icon in Android Studio then click `Run` icon to run assets to emulator
+
+(Or) Run `运行`->`运行到手机或模拟器`->`运行到Android App基座`，选择对应的adb模拟器 in HBuilderX
 
 ## Deploy
 
